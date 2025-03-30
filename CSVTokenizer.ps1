@@ -232,11 +232,11 @@ while (!(Test-Path $InputFile -PathType Leaf)){
 if (!($Delimiter)){
 	$Delimiter = ","
 }
-#cls
+cls
 Write-Host "Generating Tokens..."
 $CurrentFileTokens = TokenGenerator $InputFile ($SelectedColumns.Length) $Delimiter
-#cls
+cls
 Write-Host "Tokenizing CSV File `"$InputFile`"..."
 FileTokenizer $InputFile $Headers $SelectedColumns $CurrentFileTokens $Delimiter
-#cls
+cls
 Write-Host "Successfully tokenized file `"$InputFile`"."
