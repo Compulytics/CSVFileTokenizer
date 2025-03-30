@@ -1,0 +1,23 @@
+The CSVTokenizer.ps1 file can be used in either interactive mode or by passing arguments:
+
+=============================================================================================================
+
+INTERACTIVE MODE LAUNCH:
+
+./CSVTokenizer.ps1
+
+ARGUMENTS MODE LAUNCH:
+
+./CSVTokenizer.ps1 *PATH_TO_INPUT_CSV* -d *DELIMITER* -c *"LIST,OF,COLUMN,NAMES,TO,TOKENIZE"*
+
+   -OR-
+
+./CSVTokenizer.ps1 *PATH_TO_INPUT_CSV* -c *"LIST,OF,COLUMN,NAMES,TO,TOKENIZE"* -d *DELIMITER*
+
+=============================================================================================================
+
+An actual example would look like:
+
+./CSVTOkenizer.ps1 "C:\Users\MyUserName\Documents\Some_CSV_File.csv" -d ',' -c '"Name","Address","Phone Number"'
+
+=============================================================================================================
