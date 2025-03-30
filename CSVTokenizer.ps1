@@ -219,4 +219,4 @@ cls
 Write-Host "Tokenizing CSV File `"$InputFile`"..."
 FileTokenizer $InputFile $Headers $SelectedColumns $Delimiter
 cls
-Write-Host "Successfully tokenized file `"$InputFile`"!"
+Write-Host "Successfully tokenized file `"$InputFile`"."
