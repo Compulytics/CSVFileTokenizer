@@ -20,4 +20,9 @@ An actual example would look like:
 
 ./CSVTOkenizer.ps1 "C:\Users\MyUserName\Documents\Some_CSV_File.csv" -d ',' -c '"Name","Address","Phone Number"'
 
+The above command would create a tokenized version of the file "Some_CSV_File.csv" in the folder
+"C:\Users\MyUserName\Documents\" named "Tokenized-Some_CSV_File.csv" where the columns titled "Name", "Address",
+and "Phone Number" have their values replaced by unique tokens as well as a key file in the same folder
+named "Some_CSV_File-TokenKeys.JSON".
+
 =============================================================================================================
