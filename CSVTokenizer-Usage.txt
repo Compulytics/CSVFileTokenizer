@@ -7,6 +7,8 @@ INTERACTIVE MODE LAUNCH:
 ./CSVTokenizer.ps1
 
 ARGUMENTS MODE LAUNCH:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+To Tokenize a CSV file:
 
 ./CSVTokenizer.ps1 *PATH_TO_INPUT_CSV* -d *DELIMITER* -c *"LIST,OF,COLUMN,NAMES,TO,TOKENIZE"*
 
@@ -14,9 +16,14 @@ ARGUMENTS MODE LAUNCH:
 
 ./CSVTokenizer.ps1 *PATH_TO_INPUT_CSV* -c *"LIST,OF,COLUMN,NAMES,TO,TOKENIZE"* -d *DELIMITER*
 
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+To De-Tokenize a file:
+
+./CSVTokenizer.ps1 -t *TOKENIZED_FILE_PATH* *TOKEN_KEYS_FILE_PATH*
+
 =============================================================================================================
 
-An actual example would look like:
+An actual tokenization example would look like:
 
 ./CSVTOkenizer.ps1 "C:\Users\MyUserName\Documents\Some_CSV_File.csv" -d ',' -c '"Name","Address","Phone Number"'
 
@@ -24,5 +31,14 @@ The above command would create a tokenized version of the file "Some_CSV_File.cs
 "C:\Users\MyUserName\Documents\" named "Tokenized-Some_CSV_File.csv" where the columns titled "Name", "Address",
 and "Phone Number" have their values replaced by unique tokens as well as a key file in the same folder
 named "Some_CSV_File-TokenKeys.JSON".
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+An actual de-tokenization example would look like:
+
+./CSVTOkenizer.ps1 -t "C:\Users\MyUserName\Documents\Some_Tokenized_File" "C:\Users\MyUserName\Documents\TokenKeysFile.JSON"
+
+The above command would create a de-tokenized version of the file "Some_Tokenized_File" in the folder
+"C:\Users\MyUserName\Documents\" named "DeTokenized-Some_Tokenized_File"
 
 =============================================================================================================
