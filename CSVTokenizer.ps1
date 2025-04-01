@@ -20,10 +20,14 @@ function HelpPage(){
 	Write-Host "================================================================================"
 	Write-Host "|                                Arguments Mode                                |"
 	Write-Host "================================================================================"
+	Write-Host "| Tokenize Mode:                                                               |"
 	Write-Host "| Usage: ./CSVTokenizer.ps1 -d ',' -c '`"Name`",`"Address`",`"Phone Number`"'        |"
 	Write-Host "|                                                                              |"
 	Write-Host "| `"-c`" = Designate columns to tokenize in CSV format.                          |"
 	Write-Host "| `"-d`" = Set delimiter to be used in processing CSV file.                      |"
+	Write-Host "================================================================================"
+	Write-Host "| De-tokenize Mode:                                                            |"
+	Write-Host "| Usage: ./CSVTokenizer.ps1 -t *TOKENIZED_FILEPATH* *TOKEN_KEYS_FILEPATH*      |"
 	Write-Host "================================================================================"
 	Read-Host "ENTER TO CONTINUE..."
 }
@@ -175,26 +179,80 @@ function FileTokenizer(){
 	$JSONKeyData | ConvertTo-Json | Set-Content "$OutputPath\$OutputKeyFileName"
 	$JSONKeyData = [PSCustomObject]$KeyFileData
 }
+function Detokenize(){
+	param($InputTokenizedFilePath, $InputKeyFilePath)
+	cls
+	Write-Host "De-tokenizing file: `"$InputTokenizedFilePath`" with keyfile: `"$InputKeyFilePath`"."
+	$OutputFilePath = (Split-Path -Path $InputTokenizedFilePath -Parent)
+	$OutputFileName = "DeTokenized-$(Split-Path -Path $InputTokenizedFilePath -Leaf)"
+	$TokenizedFileData = (Get-Content -Path $InputTokenizedFilePath)
+	$TokenMapData = (Get-Content -Path $InputKeyFilePath | ConvertFrom-JSON)
+	$TokenTranslations = (Get-Content -Path $InputKeyFilePath | ConvertFrom-JSON | Get-Member -MemberType NoteProperty | Select Name)
+	$OutputFileContent = Get-Content -Path $InputTokenizedFilePath
+	foreach ($B64Value in $TokenTranslations){
+		$CurrentToken = ($TokenMapData.($B64Value.Name))
+		$CurrentOriginalValue = ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String("$($B64Value.Name)")))
+		$OutputFileContent = $OutputFileContent.Replace($CurrentToken,$CurrentOriginalValue)
+	}
+	Set-Content -Path "$OutputFilePath\$OutputFileName" -Value $OutputFileContent
+	cls
+	Write-Host "Successfully de-tokenized file `"$InputTokenizedFilePath`"."
+}
+cls
 Add-Type -AssemblyName Microsoft.VisualBasic
 if ($args[0]){
-	$InputFile = [string]$args[0]
-	if ([string]$args[1] -eq '-d'){
-		$Delimiter = [string]$args[2]
+	if ($args[0] -eq '-t'){
+		$InputTokenizedFile = [string]$args[1]
+		$InputKeyFile = [string]$args[2]
+		Detokenize $InputTokenizedFile $InputKeyFile
+		exit
 	}
-	elseif ([string]$args[1] -eq '-c'){
-		$SelectedColumnNames = [string]$args[2]
+	else{
+		$InputFile = [string]$args[0]
+		if ([string]$args[1] -eq '-d'){
+			$Delimiter = [string]$args[2]
+		}
+		elseif ([string]$args[1] -eq '-c'){
+			$SelectedColumnNames = [string]$args[2]
+		}
+		if ([string]$args[3] -eq '-c'){
+			$SelectedColumnNames = [string]$args[4]
+		}
+		elseif ([string]$args[3] -eq '-d'){
+			$Delimiter = [string]$args[4]
+		}
+		$SelectedColumnList = $SelectedColumnNames -split $Delimiter
 	}
-	if ([string]$args[3] -eq '-c'){
-		$SelectedColumnNames = [string]$args[4]
-	}
-	elseif ([string]$args[3] -eq '-d'){
-		$Delimiter = [string]$args[4]
-	}
-	$SelectedColumnList = $SelectedColumnNames -split $Delimiter
 }
 else{
-	$InputFile = Read-Host "Please enter the full path of the CSV file to tokenize"
-	$Delimiter = Read-Host "Set file delimiter (default ',')"
+	$InputMode = Read-Host "Would you like to tokenize or de-tokenize? (t,d)"
+	if ($InputMode -eq "d" -or $ImputMode -eq "D"){
+		cls
+		$InputTokenizedFile = Read-Host "Please enter the full path of the file to de-tokenize"
+		while (!(Test-Path $InputTokenizedFile -PathType Leaf)){
+			if (!(Test-Path $InputTokenizedFile -PathType Leaf)){
+				cls
+				Write-Host "ERROR: $InputTokenizedFile - Path invalid."
+				$InputTokenizedFile = Read-Host "Please enter the full path of the file to de-tokenize"
+			}
+		}
+		cls
+		$InputKeyFile = Read-Host "Please enter the full path of the TokenKeys file"
+		while (!(Test-Path $InputKeyFile -PathType Leaf)){
+			if (!(Test-Path $InputKeyFile -PathType Leaf)){
+				cls
+				Write-Host "ERROR: $InputKeyFile - Path invalid."
+				$InputKeyFile = Read-Host "Please enter the full path of the TokenKeys file"
+			}
+		}
+		Detokenize $InputTokenizedFile $InputKeyFile
+		exit
+	}
+	else{
+		$InputFile = Read-Host "Please enter the full path of the CSV file to tokenize"
+		cls
+		$Delimiter = Read-Host "Set file delimiter (default ',')"
+	}
 }
 if (!($Delimiter)){
 	$Delimiter = ','
@@ -214,7 +272,6 @@ if ($args[0]){
 else{
 	$SelectedColumns = TableSelection $Headers @()
 }
-
 while (!(Test-Path $InputFile -PathType Leaf)){
 	if (!(Test-Path $InputFile -PathType Leaf)){
 		cls
