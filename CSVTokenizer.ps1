@@ -18,6 +18,13 @@ function HelpPage(){
 	Write-Host "| QUIT = End script execution.                                                 |"
 	Write-Host "| H = Show this help menu.                                                     |"
 	Write-Host "================================================================================"
+	Write-Host "|                                Arguments Mode                                |"
+	Write-Host "================================================================================"
+	Write-Host "| Usage: ./CSVTokenizer.ps1 -d ',' -c '`"Name`",`"Address`",`"Phone Number`"'  |"
+	Write-Host "|                                                                              |"
+	Write-Host "| `"-c`" = Designate columns to tokenize in CSV format.                        |"
+	Write-Host "| `"-d`" = Set delimiter to be used in processing CSV file.                    |"
+	Write-Host "================================================================================"
 	Read-Host "ENTER TO CONTINUE..."
 }
 function Summary(){
